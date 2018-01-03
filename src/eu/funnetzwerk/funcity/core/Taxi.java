@@ -36,6 +36,7 @@ public class Taxi {
 			current = new Location(w, x, y, z, yaw, pitch);
 			tPoint = new TeleportPoint(current);
 			
+			
 			tPoint.setAlwaysOnTop(false);
 			
 			taxi_stops.add(tPoint);
