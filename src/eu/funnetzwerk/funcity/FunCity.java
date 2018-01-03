@@ -13,17 +13,18 @@ import eu.funnetzwerk.funcity.cmd.TaxiCommand;
 import eu.funnetzwerk.funcity.cmd.delTaxiCommand;
 import eu.funnetzwerk.funcity.cmd.setTaxiCommand;
 import eu.funnetzwerk.funcity.core.Taxi;
+import eu.funnetzwerk.funcity.listener.PlayerInventoryClickListener;
 
 public class FunCity extends JavaPlugin {
 
 	private static Plugin plugin;
 	
-	private Taxi taxiClass;
+	private static Taxi taxiClass;
 	
-	private static File file_main = new File("/plugins/FunCity", "config.yml");
+	private static File file_main = new File("plugins/FunCity", "config.yml");
 	private static FileConfiguration cfg_main = YamlConfiguration.loadConfiguration(file_main);
 	
-	private static File file_taxi = new File("/plugins/FunCity/locations", "taxi_stops.list");
+	private static File file_taxi = new File("plugins/FunCity/locations", "taxistops.yml");
 	private static FileConfiguration cfg_taxi = YamlConfiguration.loadConfiguration(file_taxi);
 	
 	@Override
@@ -31,17 +32,26 @@ public class FunCity extends JavaPlugin {
 		
 		plugin = this;
 		
+		if(!file_main.exists()) {
+			
+			cfg_main.set("features.taxi", true);
+			
+			
+			//TAXI OPTIONS
+			cfg_main.set("options.taxi.costPerUse", 1);
+			cfg_main.set("options.taxi.cooldown", 0);
+			
+			setCfg_main(cfg_main);
+			
+		}
+		
 		System.out.println("FunCity loaded! Activating features...");
 		
 		if(PluginFeatures.Taxi.isActive()) {
 		
 			System.out.println("Taxis => ENABLED");
 			
-			if(file_taxi.exists()) {
-				
-				taxiClass = new Taxi();
-				
-			} else {
+			if(!file_taxi.exists()) {
 				
 				try {
 					file_taxi.createNewFile();
@@ -49,15 +59,15 @@ public class FunCity extends JavaPlugin {
 					e.printStackTrace();
 				}
 				
-				taxiClass = new Taxi();
-				
 			}
 			
 		} else {
 			System.out.println("Taxis => DISABLED");
 		}
 		
-		setTaxiClass(new Taxi());
+		taxiClass = new Taxi();
+		
+		Bukkit.getPluginManager().registerEvents(new PlayerInventoryClickListener(), this);
 		
 		getCommand("taxi").setExecutor(new TaxiCommand());
 		getCommand("settaxi").setExecutor(new setTaxiCommand());
@@ -69,25 +79,21 @@ public class FunCity extends JavaPlugin {
 		return plugin;
 	}
 
-	public Taxi getTaxiClass() {
+	public static Taxi getTaxiClass() {
 		return taxiClass;
-	}
-
-	public void setTaxiClass(Taxi taxiClass) {
-		this.taxiClass = taxiClass;
 	}
 
 	public static FileConfiguration getCfg_taxi() {
 		return cfg_taxi;
 	}
 
-	public void setCfg_taxi(FileConfiguration cfg_taxi) {
-		FunCity.cfg_taxi = cfg_taxi;
+	public static void setCfg_taxi(FileConfiguration cfg) {
+		
+		FunCity.cfg_taxi = cfg;
 		
 		try {
-			cfg_taxi.save(file_taxi);
+			cfg_taxi.save(FunCity.file_taxi);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -103,7 +109,6 @@ public class FunCity extends JavaPlugin {
 		try {
 			cfg_main.save(file_main);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
