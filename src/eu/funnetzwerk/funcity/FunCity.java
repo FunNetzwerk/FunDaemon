@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import eu.funnetzwerk.funcity.cmd.TaxiCommand;
@@ -14,12 +15,15 @@ import eu.funnetzwerk.funcity.cmd.delTaxiCommand;
 import eu.funnetzwerk.funcity.cmd.setTaxiCommand;
 import eu.funnetzwerk.funcity.core.Taxi;
 import eu.funnetzwerk.funcity.listener.PlayerInventoryClickListener;
+import net.milkbowl.vault.economy.Economy;
 
 public class FunCity extends JavaPlugin {
 
 	private static Plugin plugin;
 	
 	private static Taxi taxiClass;
+	
+	public static Economy econ = null;
 	
 	private static File file_main = new File("plugins/FunCity", "config.yml");
 	private static FileConfiguration cfg_main = YamlConfiguration.loadConfiguration(file_main);
@@ -38,7 +42,7 @@ public class FunCity extends JavaPlugin {
 			
 			
 			//TAXI OPTIONS
-			cfg_main.set("options.taxi.costPerUse", 1);
+			cfg_main.set("options.taxi.costPerUse", 5);
 			cfg_main.set("options.taxi.cooldown", 0);
 			
 			setCfg_main(cfg_main);
@@ -73,6 +77,8 @@ public class FunCity extends JavaPlugin {
 		getCommand("settaxi").setExecutor(new setTaxiCommand());
 		getCommand("deltaxi").setExecutor(new delTaxiCommand());
 		
+		setupEconomy();
+		
 	}
 	
 	public static Plugin getPlugin() {
@@ -86,6 +92,15 @@ public class FunCity extends JavaPlugin {
 	public static FileConfiguration getCfg_taxi() {
 		return cfg_taxi;
 	}
+	
+	private boolean setupEconomy() {
+        RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+        if (economyProvider != null) {
+            econ = economyProvider.getProvider();
+        }
+
+        return (econ != null);
+    }
 
 	public static void setCfg_taxi(FileConfiguration cfg) {
 		

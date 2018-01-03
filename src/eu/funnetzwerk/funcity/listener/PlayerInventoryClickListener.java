@@ -1,5 +1,6 @@
 package eu.funnetzwerk.funcity.listener;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,6 +10,8 @@ import org.bukkit.event.inventory.InventoryType.SlotType;
 
 import eu.funnetzwerk.funcity.FunCity;
 import eu.funnetzwerk.funcity.var.TeleportPoint;
+import net.milkbowl.vault.Vault;
+import net.milkbowl.vault.economy.EconomyResponse;
 
 public class PlayerInventoryClickListener implements Listener {
 
@@ -36,9 +39,27 @@ public class PlayerInventoryClickListener implements Listener {
 									for(TeleportPoint tp : FunCity.getTaxiClass().getStops()) {
 										
 										if(e.getCurrentItem().getItemMeta().getDisplayName() == tp.getDisplayName()) {
-											p.closeInventory();
-											tp.teleportEntity(p);
-											p.sendMessage("§7Du wurdest zur Haltestelle §6" + tp.getDisplayName() + "§7 teleportiert!");
+											
+											EconomyResponse r = FunCity.econ.withdrawPlayer(Bukkit.getOfflinePlayer(p.getUniqueId()), FunCity.getTaxiClass().getCostPerTeleport());
+											
+											String currency;
+											
+											if(FunCity.getTaxiClass().getCostPerTeleport() > 1) {
+												currency = FunCity.econ.currencyNamePlural();
+											} else {
+												currency = FunCity.econ.currencyNameSingular();
+											}
+											
+											if(r.transactionSuccess()) {
+												p.closeInventory();
+												tp.teleportEntity(p);
+												p.sendMessage("§7Du wurdest zur Haltestelle §6" + tp.getDisplayName() + "§7 für §6" + FunCity.getTaxiClass().getCostPerTeleport() + " " + currency + " §7 teleportiert!");
+											} else {
+												p.closeInventory();
+												p.sendMessage("§7Du besitzt nicht genügend Geld!");
+											}
+											
+											
 										}
 										
 									}

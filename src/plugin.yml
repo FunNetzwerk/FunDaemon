@@ -2,22 +2,11 @@ name: FunCity
 version: 1.0
 author: Freakster
 
+depend: [Vault]
+
 main: eu.funnetzwerk.funcity.FunCity
 
 commands:
    taxi:
-      description: Öffnet das Taxi Inventar.
-      aliases: warps
-      permission: FunCity.Taxi.Use
-      usage: Syntax: /<command>
    settaxi:
-      description: Setzt eine Haltestelle.
-      permission: FunCity.Taxi.Admin.Set
-      usage: Syntax: /<command> <name>
    deltaxi:
-      description: Löscht eine Haltestelle.
-      permission: FunCity.Taxi.Admin.Del
-      usage: Syntax: /<command> <name>
-   
-loadbefore: [Vault]
-prefix: FunCity
