@@ -1,5 +1,5 @@
 package com.heefly.cloud.daemon.vars;
 
-public class Proxyserver {
+public class ProxyServer {
 
 }
