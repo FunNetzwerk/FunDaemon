@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.heefly.cloud.daemon.core.GameServerManager;
+
 public class ServerThread implements Runnable {
 
 	private boolean paused = false;
@@ -56,13 +58,14 @@ public class ServerThread implements Runnable {
 		try {
 			process = processBuilder.start();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
 		stream_out = process.getOutputStream();
 		stream_err = process.getErrorStream();
 		stream_in = process.getInputStream();
+		
+		GameServerManager.setStarting_servers(GameServerManager.getStarting_servers()+1);
 		
 		//PAUSE CONTINUE PROCESS!
 		synchronized (this) {

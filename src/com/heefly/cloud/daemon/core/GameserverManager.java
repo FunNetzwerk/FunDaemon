@@ -12,6 +12,8 @@ public class GameServerManager extends Thread {
 
 	private static HashMap<UUID, GameServer> server_list = new HashMap<UUID, GameServer>();
 	
+	private static int starting_servers = 0; 
+	
 	public GameServerManager() throws IOException {
 		start();
 	}
@@ -19,16 +21,29 @@ public class GameServerManager extends Thread {
 	@Override
 	public void run() {
 		
-		ArrayList<GameServerStartParameters> starting_servers = null;
+		ArrayList<GameServerStartParameters> starting_servers = new ArrayList<GameServerStartParameters>();
 		
 		for(GameServerStartParameters start_server : starting_servers){
 			
 			UUID uuid = UUID.randomUUID();
 			
-			server_list.put(uuid, new GameServer(uuid, start_server));
+			try {
+				server_list.put(uuid, new GameServer(uuid, start_server));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 		}
 		
+	}
+
+	public static int getStarting_servers() {
+		return starting_servers;
+	}
+
+	public static void setStarting_servers(int starting_servers) {
+		GameServerManager.starting_servers = starting_servers;
 	}
 	
 }

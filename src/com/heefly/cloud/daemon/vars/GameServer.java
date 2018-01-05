@@ -1,7 +1,10 @@
 package com.heefly.cloud.daemon.vars;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.UUID;
+
+import com.heefly.cloud.daemon.core.SystemUtils;
 
 public class GameServer {
 
@@ -16,7 +19,9 @@ public class GameServer {
 	
 	private Path path;
 	
-	public GameServer(UUID ID, GameServerStartParameters gssp) {
+	private ServerThread thread;
+	
+	public GameServer(UUID ID, GameServerStartParameters gssp) throws IOException {
 		
 		this.id = ID;
 		this.path = gssp.getPath();
@@ -26,6 +31,11 @@ public class GameServer {
 		this.Xms = gssp.getMinRam();
 		this.Xmx = gssp.getMaxRam();
 		
+		thread = new ServerThread(this);
+		
+		SystemUtils.getCPUCores();
+		
+		thread.pause();
 		
 	}
 	
