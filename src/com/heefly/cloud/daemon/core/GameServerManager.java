@@ -1,5 +1,11 @@
 package com.heefly.cloud.daemon.core;
 
-public class GameserverManager {
+import java.io.IOException;
 
+public class GameServerManager {
+
+	public GameServerManager() throws IOException {
+		
+	}
+	
 }
